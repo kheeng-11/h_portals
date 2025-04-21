@@ -114,24 +114,6 @@ Sidebar Navigation:
 Main Panel:
 - Performance insights and important notifications
 
-Folder Structure
-
-school_portal/
-│
-├── accounts/         # Authentication and user roles
-├── core/             # Shared models and utilities
-├── students/         # Student-specific features
-├── teachers/         # Teacher-specific features
-├── parents/          # Parent-specific features
-├── static/           # Static files
-├── templates/        # HTML templates
-├── media/            # Uploaded files
-├── manage.py
-└── requirements.txt
-
-Testing
-
-python manage.py test
 
 Deployment
 
