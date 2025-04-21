@@ -1,4 +1,4 @@
-Herly School Portal
+# Herly School Portal
 A comprehensive school management system built with Django for primary and secondary schools. It includes full role-based access for administrators, teachers, students, and parents. The system supports timetables, attendance tracking, grading, communication, and visual analytics.
 
 Features
