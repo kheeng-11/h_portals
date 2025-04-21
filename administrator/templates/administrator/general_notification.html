@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'administrator/inc/head.html' %}
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      {% include 'administrator/inc/sidebar.html' %}
+      <!-- End Sidebar -->
+
+      <div class="main-panel">
+        
+        {% include 'administrator/inc/header.html' %}
+         <div class="container">
+          <div class="page-inner">
+            <div class="card">
+                  <div class="card-header">
+                    <a href="javascript:history.back()" style="text-decoration: none; font-size: 14px; color: #6861ce;">
+                        &#8592; Back
+                    </a>
+                    <div class="card-title"> General Notification Board </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="card-sub">
+                      <div style="display: flex;">
+                       <a
+                              href="{% url 'administrator:add_general_notification'  %}"
+                              class="btn btn-xs btn-secondary btn-sm"
+                              style="margin-left: 5px;">Add Notification
+                              </a
+                            >
+                           </div>
+                    </div>
+                    {% for not in not_info %}
+                    <div class="row mt-12">
+                  
+                  <div class="col-md-12">
+                    
+                     <strong style="color:#6861ce;">Notification :</strong> {{not.g_not_notification}}
+                     <br>
+                      <strong style="color:#be66ff;">Audience :</strong> {{not.g_not_audience}}
+                      <br>
+                      <strong style="color:#ff6666;">Date :</strong> {{not.g_not_date}}
+                      
+                    </div>
+                    <div style="display:flex; margin: 5px;">
+                    <a  href="{% url 'administrator:edit_general_notification' not.id %}" style="margin:5px; border-radius: 5px; padding: 5px; border: 1px solid blue;">
+                        <i class="fas fa-pencil-alt text-primary"></i>
+                      </a>
+                      <a  href="{% url 'administrator:delete_general_notification' not.id %}" style="margin:5px; border-radius: 5px; padding: 5px; border: 1px solid red; color: red;" onclick="return confirmDelete(event,this.href)">
+                        <i class="fas fa-trash"></i>
+                      </a>
+                      </div>
+                  </div>
+                  {% empty %}
+                  <center> <p style="color:red;">No Notification Found!</p></center>
+                  {% endfor %}
+                  </div>
+                </div>
+          </div>
+        </div>
+<script>
+function confirmDelete(event, url) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6861ce",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>
+        {% include 'administrator/inc/footer.html' %}      
+  </body>
+</html>

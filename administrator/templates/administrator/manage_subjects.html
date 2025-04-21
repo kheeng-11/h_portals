@@ -1,0 +1,223 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'administrator/inc/head.html' %}
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      {% include 'administrator/inc/sidebar.html' %}
+      <!-- End Sidebar -->
+
+      <div class="main-panel">
+        
+        {% include 'administrator/inc/header.html' %}
+        <div class="container">
+          <div class="page-inner">
+            <div class="card">
+                  <div class="card-header">
+                    <a href="javascript:history.back()" style="text-decoration: none; font-size: 14px; color: #6861ce;">
+                        &#8592; Back
+                    </a>
+                    <div class="card-title">Manage Subjects For {{ class_info.class_name}}</div>
+                  </div>
+                  <div class="card-body">
+                    <div class="card-sub">
+                      <div style="display: flex;">
+                       <input type="text" id="searchInput" placeholder=" search..." 
+                      style="width: 130px; height: 28px; border: 1px solid #ccc; border-radius: 15px; padding: 5px; color: grey; font-size:14px;">
+                            <a
+                              href="{% url 'administrator:add_subject' class_info.id %}"
+                              class="btn btn-xs btn-secondary btn-sm"
+                              style="margin-left: 5px;">Add Subject
+                              </a
+                            ><a
+                              href="{% url 'administrator:assign_subject' class_info.id %}"
+                              class="btn btn-xs btn-secondary btn-sm"
+                              style="margin-left: 5px;">Assign ST
+                              </a
+                            ></div>
+                    </div>
+                    <div class="table-responsive">
+                      <table class="table table-bordered" id="table">
+                        <thead>
+                          <tr>
+                            <th>S/N</th>
+                            <th>Subject Name</th>
+                            <th>Subject Teacher</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for subject in subjects %}
+                              <tr>
+                                  <th>{{ forloop.counter }}</th>
+                                  <td>{{ subject.subject_name }}</td>
+                                  <td>
+                                      {% for assignment in subject.assign_subject_set.all %}
+                                          {{ assignment.assign_teacher.teacher_fname }} {{ assignment.assign_teacher.teacher_othernames }}
+                                          {% if not forloop.last %}, {% endif %}
+                                      {% empty %}
+                                          Not Assigned
+                                      {% endfor %}
+                                  </td>
+                                  <td>
+                                      <a href="{% url 'administrator:edit_subject' subject.id %}" 
+                                         class="btn btn-xs btn-secondary btn-sm"
+                                         style="margin-top: 5px;" title="Edit">
+                                         <i class="fa fa-edit"></i>
+                                      </a>
+                                      <a href="{% url 'administrator:delete_subject' subject.id %}"
+                                         class="btn btn-xs btn-secondary btn-sm"
+                                         style="margin-top: 5px;" title="Delete"
+                                         onclick="return confirmDelete(event, this.href)">
+                                         <i class="fa fa-trash"></i>
+                                      </a>
+                                  </td>
+                              </tr> 
+                          {% empty %}
+                              <tr>
+                                  <td colspan="4" style="color:red;">
+                                      <center>No Subject Found!</center>
+                                  </td>
+                              </tr>
+                          {% endfor %}
+                      </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+          <div style="
+          text-align: center;
+          margin-top: 20px;
+          padding: 5px;
+          background-color: #6861ce;
+          border-radius: 10px;
+          font-size: 14px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 10px;
+      ">
+          <button id="prevPage" style="
+              padding: 5px 10px;
+              border: none;
+              border-radius: 5px;
+              background-color: white;
+              color: #6861ce;
+              font-weight: bold;
+              font-size: 14px;
+              cursor: pointer;
+              transition: all 0.3s ease;
+          " onmouseover="this.style.backgroundColor='#1a2035'; this.style.color='white';" 
+          onmouseout="this.style.backgroundColor='white'; this.style.color='#6861ce';">
+              ◀ Previous
+          </button>
+
+          <span id="pageNumber" style="
+              color: white;
+              font-size: 14px;
+              font-weight: bold;
+          ">Page 1 of X</span>
+
+          <button id="nextPage" style="
+              padding: 5px 10px;
+              border: none;
+              border-radius: 5px;
+              background-color: white;
+              color: #6861ce;
+              font-weight: bold;
+              cursor: pointer;
+              transition: all 0.3s ease;
+          " onmouseover="this.style.backgroundColor='#1a2035'; this.style.color='white';" 
+          onmouseout="this.style.backgroundColor='white'; this.style.color='#6861ce';">
+              Next ▶
+          </button>
+      </div>
+ 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rowsPerPage = 5; 
+        let currentPage = 1;
+
+        const table = document.getElementById("table");
+        const rows = Array.from(table.getElementsByTagName("tr")).slice(1);
+        const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+        function displayRows() {
+            rows.forEach((row, index) => {
+                row.style.display = (index >= (currentPage - 1) * rowsPerPage && index < currentPage * rowsPerPage) ? "" : "none";
+            });
+            updatePaginationButtons();
+        }
+
+        function updatePaginationButtons() {
+            document.getElementById("prevPage").disabled = currentPage === 1;
+            document.getElementById("nextPage").disabled = currentPage === totalPages;
+            document.getElementById("pageNumber").innerText = `Page ${currentPage} of ${totalPages}`;
+        }
+
+        document.getElementById("prevPage").addEventListener("click", function () {
+            if (currentPage > 1) {
+                currentPage--;
+                displayRows();
+            }
+        });
+
+        document.getElementById("nextPage").addEventListener("click", function () {
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayRows();
+            }
+        });
+
+        displayRows();
+    });
+</script>
+<script>
+function confirmDelete(event, url) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6861ce",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>
+<script>
+   document.getElementById('searchInput').addEventListener('input', function () {
+        const filter = this.value.toUpperCase();
+        const table = document.getElementById('table');
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let rowMatches = false;
+
+            for (let j = 0; j < cells.length; j++) {
+                const cell = cells[j];
+                if (cell) {
+                    const textValue = cell.textContent || cell.innerText;
+                    if (textValue.toUpperCase().indexOf(filter) > -1) {
+                        rowMatches = true;
+                        break; 
+                    }
+                }
+            }
+            rows[i].style.display = rowMatches ? '' : 'none';
+        }
+    });
+</script>
+          </div>
+        </div>
+        {% include 'administrator/inc/footer.html' %}      
+  </body>
+</html>

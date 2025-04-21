@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'teacher/inc/head.html' %}
+  <head>
+    <style>
+      .record-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-top: 20px;
+      }
+      .profile-img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 3px solid #007bff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        object-fit: cover; 
+        object-position: center;
+      }
+      .edit-icon {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: white;
+        padding: 5px;
+        border-radius: 50%;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+      .info-box {
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+      }
+    
+      .editable .save-icon {
+        display: none;
+      }
+      @media (max-width: 768px) {
+        .info-box {
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      {% include 'teacher/inc/sidebar.html' %}
+      <div class="main-panel">
+        {% include 'teacher/inc/header.html' %}
+        <div class="container">
+          <div class="page-inner">
+            <div class="card record-card">
+              <div class="card-header ">
+                <a href="javascript:history.back()" style="text-decoration: none; font-size: 14px; color: #6861ce;">
+                        &#8592; Back
+                    </a>
+                <h3>My Profile : {{ teacher_info.teacher_fname}} {{ teacher_info.teacher_othernames}}</h3>
+              </div>
+              <div class="card-body text-center">
+                <div class="position-relative d-inline-block">
+                              <img src="{{teacher_info.teacher_picture.url }}" alt="Profile Picture" class="profile-img">
+                  <a href="{% url 'teacher:change_profile_picture' teacher_info.id %}" class="edit-icon">
+                    <i class="fas fa-pencil-alt text-primary"></i>
+                  </a>
+                </div>
+                <h4 class="mt-3">{{ teacher_info.teacher_fname}} {{ teacher_info.teacher_othernames}}
+                </h4>
+                <hr>
+                <div class="row mt-4">
+                  <div class="col-md-4 col-sm-6 info-box">
+                    <strong>Email :</strong> {{ teacher_info.teacher_email}}
+                  </div>
+                  <div class="col-md-4 col-sm-6 info-box">
+                    <strong>Phone Number:</strong> {{ teacher_info.teacher_phone}}
+                  </div>
+                  <div class="col-md-4 col-sm-6 info-box">
+                    
+                      <strong>Gender:</strong>
+                      {{ teacher_info.teacher_gender}}
+                    
+                  </div>
+                  <div class="col-md-4 col-sm-6 info-box">
+                    <strong>School Section:</strong> {{ teacher_info.teacher_section.section_name}}
+                  </div>
+                  <div class="col-md-4 col-sm-6 info-box">
+                    <strong>Address:</strong> {{ teacher_info.teacher_address}}
+                  </div>
+                  <div class="col-md-4 col-sm-6 info-box">
+                    
+                      <strong>Date of Birth:</strong>
+                      {{ teacher_info.teacher_dob}}
+                      <a  class="edit-icon edit-dob" href="{% url 'teacher:edit_profile' teacher_info.id %}">
+                        <i class="fas fa-pencil-alt text-primary"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% include 'teacher/inc/footer.html' %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'teacher/inc/head.html' %}
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      {% include 'teacher/inc/sidebar.html' %}
+      <!-- End Sidebar -->
+
+      <div class="main-panel">
+        
+        {% include 'teacher/inc/header.html' %}
+        <div class="container">
+          <div class="page-inner">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-header">
+                    <a href="javascript:history.back()" style="text-decoration: none; font-size: 14px; color: #6861ce;">
+                        &#8592; Back
+                    </a>
+                    <div class="card-title">Add Notification</div>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <center>{% for message in messages %}
+                        {% if message.tags == "success" %}
+                         <script>
+                              Swal.fire({
+                                  title: "Success!",
+                                  text: "{{ message }}",
+                                  icon: "success", 
+                                  timer: 1500,
+                                  showConfirmButton: false
+                              }).then(() => {
+                                  window.location.href = "{% url 'teacher:notifications' not_info.id s_info.id %}";
+                              });
+                            </script>
+                        {% elif message.tags == "error" %}
+                            <script>
+                              Swal.fire({
+                                  title: "Error!",
+                                  text: "{{ message }}",
+                                  icon: "error", 
+                                  timer: 1500,
+                                  showConfirmButton: false
+                              }).then(() => {
+                                  window.location.href = "{% url 'teacher:add_notification' not_info.id s_info.id %}";
+                              });
+                            </script>
+                        {% endif %}
+                        {% endfor %}
+                      </center>
+                      <div class="col-md-6 col-lg-6">
+                        <form method="post">
+                          {% csrf_token %}
+                        <div class="form-group">
+                          <label for="email2">Notice</label>
+                          <textarea
+                            class="form-control"
+                            name="notification_content"
+                            required
+                          ></textarea>
+                        </div>
+                        
+                        <button class="btn btn-xs btn-secondary btn-sm" style="margin-left:10px; width: 150px; height: 40px; font-size: 14px; border-radius: 7px;"> Add Notice </button>
+                        </form>
+                 </div>
+              </div>   
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include 'teacher/inc/footer.html' %}      
+  </body>
+</html>

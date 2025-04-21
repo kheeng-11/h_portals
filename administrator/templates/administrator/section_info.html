@@ -1,0 +1,428 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'administrator/inc/head.html' %}
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      {% include 'administrator/inc/sidebar.html' %}
+      <!-- End Sidebar -->
+
+      <div class="main-panel">
+        
+        {% include 'administrator/inc/header.html' %}
+        <div class="container">
+          <div class="page-inner">
+            {% for sect in section_info %}
+          <div class="card">
+                  <div class="card-header">
+                    <a href="javascript:history.back()" style="text-decoration: none; font-size: 14px; color: #6861ce;">
+                        &#8592; Back
+                    </a>
+                    <div class="card-title">{{ sect.section_name }}</div>
+                  </div>
+
+                  <div class="card-body">
+                    <div class="card-title" style="font-size: 15px; margin-bottom: 20px; color: #6861ce;">
+                    {% for secthead in secthead %}
+                  Sect. Head : {{ secthead.assign_steacher.teacher_fname }} {{ secthead.assign_steacher.teacher_othernames }}
+                {% endfor %}</div>
+                    <div class="card-sub">
+                      {{ sect.section_name }}, Added on {{ sect.section_added_on }}
+                    </div>
+                    <div class="card-sub">
+                      <div style="display: flex;">
+                       <input type="text" id="searchInput1" placeholder=" search..." 
+                      style="width: 130px; height: 28px; border: 1px solid #ccc; border-radius: 15px; padding: 5px; color: grey; font-size:14px;">
+                            <a
+                              href="{% url 'administrator:add_teacher' sect.id %}"
+                              class="btn btn-xs btn-secondary btn-sm"
+                              style="margin-left: 5px;">Add teacher
+                              </a
+                            >
+                          <a
+                              href="{% url 'administrator:assign' sect.id %}"
+                              class="btn btn-xs btn-secondary btn-sm"
+                              style="margin-left: 5px;">Assign CM
+                              </a
+                            ></div>
+                    </div>
+                    <div class="table-responsive">
+                      <table class="table table-bordered" id="table-assignment">
+                        <thead>
+                          <tr>
+                            <th>S/N</th>
+                            <th>Picture</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for section_teacher_info in section_teacher_info %}
+
+                          <tr>
+                            <th>{{ forloop.counter }}</th>
+                            <td>
+                              <img src="{{ section_teacher_info.teacher_picture.url}}" style="width:80px; height: 80px; border-radius:7px; object-fit: cover; object-position: center;">
+                                  </td>
+                            <td>{{ section_teacher_info.teacher_fname }} {{ section_teacher_info.teacher_othernames }}</td>
+                            <td>{{ section_teacher_info.teacher_email }}</td>
+                            <td>{{ section_teacher_info.teacher_phone }}</td>
+                            <td><a
+                              href="{% url 'administrator:teacher_record' section_teacher_info.id %}"
+                              class="btn btn-xs btn-secondary btn-sm"
+                              style="margin-top: 5px;" title="View"><i class="fa fa-eye"></i>
+                              </a
+                            >
+                          <a href="{% url 'administrator:delete_teacher' section_teacher_info.id %}"
+                           class="btn btn-xs btn-secondary btn-sm"
+                           style="margin-top: 5px;" title="Delete"
+                           onclick="return confirmDelete(event,this.href)">
+                           <i class="fa fa-trash"></i>
+                        </a>
+                        </td>
+                          </tr> 
+                          {% empty %}
+                          <tr>
+                            <td colspan="4" style="color:red;"><center>No Teacher Found!</center></td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div style="
+                      text-align: center;
+                      margin-top: 20px;
+                      padding: 5px;
+                      background-color: #6861ce;
+                      border-radius: 10px;
+                      font-size: 14px;
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                      gap: 10px;
+                  ">
+                      <button id="prevPage1" style="
+                          padding: 5px 10px;
+                          border: none;
+                          border-radius: 5px;
+                          background-color: white;
+                          color: #6861ce;
+                          font-weight: bold;
+                          font-size: 14px;
+                          cursor: pointer;
+                          transition: all 0.3s ease;
+                      " onmouseover="this.style.backgroundColor='#1a2035'; this.style.color='white';" 
+                      onmouseout="this.style.backgroundColor='white'; this.style.color='#6861ce';">
+                          ◀ Previous
+                      </button>
+
+                      <span id="pageNumber1" style="
+                          color: white;
+                          font-size: 14px;
+                          font-weight: bold;
+                      ">Page 1 of X</span>
+
+                      <button id="nextPage1" style="
+                          padding: 5px 10px;
+                          border: none;
+                          border-radius: 5px;
+                          background-color: white;
+                          color: #6861ce;
+                          font-weight: bold;
+                          cursor: pointer;
+                          transition: all 0.3s ease;
+                      " onmouseover="this.style.backgroundColor='#1a2035'; this.style.color='white';" 
+                      onmouseout="this.style.backgroundColor='white'; this.style.color='#6861ce';">
+                          Next ▶
+                      </button>
+                  </div>
+                  <br>
+                    <div class="card-sub">
+                      <div style="display: flex;">
+                       <input type="text" id="searchInput" placeholder=" search..." 
+                      style="width: 130px; height: 28px; border: 1px solid #ccc; border-radius: 15px; padding: 5px; color: grey; font-size:14px;">
+                            <a
+                              href="{% url 'administrator:add_class' sect.id %}"
+                              class="btn btn-xs btn-secondary btn-sm"
+                              style="margin-left: 5px;">Add Class
+                              </a></div>
+                    </div>
+                    <div class="table-responsive">
+                      <table class="table table-bordered" id="table-subject">
+                        <thead>
+                          <tr>
+                            <th>S/N</th>
+                            <th>Class Name</th>
+                            <th>Class Master</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for section_class_info in section_class_info %}
+                          <tr>
+                              <th>{{ forloop.counter }}</th>
+                              <td>{{ section_class_info.class_name }}</td>
+                              <td>
+                                  {% for assignment in section_class_info.assign_set.all %}
+                                      {{ assignment.assign_teacher.teacher_fname }} {{ assignment.assign_teacher.teacher_othernames }}
+                                      {% if not forloop.last %}, {% endif %}
+                                  {% empty %}
+                                      Not Assigned
+                                  {% endfor %}
+                              </td>
+                              <td>
+                                  <a href="{% url 'administrator:edit_class' section_class_info.id %}"
+                                     class="btn btn-xs btn-secondary btn-sm"
+                                     style="margin-top: 5px;" title="Edit">
+                                     <i class="fa fa-edit"></i>
+                                  </a>
+                                  <a href="{% url 'administrator:delete_class' section_class_info.id %}"
+                                     class="btn btn-xs btn-secondary btn-sm"
+                                     style="margin-top: 5px;" title="Delete"
+                                     onclick="return confirmDelete(event, this.href)">
+                                     <i class="fa fa-trash"></i>
+                                  </a>
+                                  <a href="{% url 'administrator:manage_subjects' section_class_info.id %}"
+                                     class="btn btn-xs btn-secondary btn-sm"
+                                     style="margin-top: 5px;">
+                                     Subjects
+                                  </a>
+                                   <a href="{% url 'administrator:manage_students' section_class_info.id %}"
+                                     class="btn btn-xs btn-secondary btn-sm"
+                                     style="margin-top: 5px;" title="Edit">
+                                     <i class="fa fa-users"></i>
+                                  </a>
+                              </td>
+                          </tr>
+                      {% empty %}
+                          <tr>
+                              <td colspan="4" style="color:red;"><center>No Class Found!</center></td>
+                          </tr>
+                      {% endfor %}
+
+                        </tbody>
+                      </table>
+                    </div>
+                    <div style="
+                  text-align: center;
+                  margin-top: 20px;
+                  padding: 5px;
+                  background-color: #6861ce;
+                  border-radius: 10px;
+                  font-size: 14px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  gap: 10px;
+              ">
+                  <button id="prevPage" style="
+                      padding: 5px 10px;
+                      border: none;
+                      border-radius: 5px;
+                      background-color: white;
+                      color: #6861ce;
+                      font-weight: bold;
+                      font-size: 14px;
+                      cursor: pointer;
+                      transition: all 0.3s ease;
+                  " onmouseover="this.style.backgroundColor='#1a2035'; this.style.color='white';" 
+                  onmouseout="this.style.backgroundColor='white'; this.style.color='#6861ce';">
+                      ◀ Previous
+                  </button>
+
+                  <span id="pageNumber" style="
+                      color: white;
+                      font-size: 14px;
+                      font-weight: bold;
+                  ">Page 1 of X</span>
+
+                  <button id="nextPage" style="
+                      padding: 5px 10px;
+                      border: none;
+                      border-radius: 5px;
+                      background-color: white;
+                      color: #6861ce;
+                      font-weight: bold;
+                      cursor: pointer;
+                      transition: all 0.3s ease;
+                  " onmouseover="this.style.backgroundColor='#1a2035'; this.style.color='white';" 
+                  onmouseout="this.style.backgroundColor='white'; this.style.color='#6861ce';">
+                      Next ▶
+                  </button>
+              </div>
+                    
+                    
+                  </div>
+                </div>
+                {% endfor %}
+    </div>
+  </div>
+  <script>
+function confirmDelete(event, url) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6861ce",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script><script>
+function confirmDelete(event, url) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6861ce",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rowsPerPage = 5; 
+        let currentPage = 1;
+
+        const table = document.getElementById("table-subject");
+        const rows = Array.from(table.getElementsByTagName("tr")).slice(1);
+        const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+        function displayRows() {
+            rows.forEach((row, index) => {
+                row.style.display = (index >= (currentPage - 1) * rowsPerPage && index < currentPage * rowsPerPage) ? "" : "none";
+            });
+            updatePaginationButtons();
+        }
+
+        function updatePaginationButtons() {
+            document.getElementById("prevPage").disabled = currentPage === 1;
+            document.getElementById("nextPage").disabled = currentPage === totalPages;
+            document.getElementById("pageNumber").innerText = `Page ${currentPage} of ${totalPages}`;
+        }
+
+        document.getElementById("prevPage").addEventListener("click", function () {
+            if (currentPage > 1) {
+                currentPage--;
+                displayRows();
+            }
+        });
+
+        document.getElementById("nextPage").addEventListener("click", function () {
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayRows();
+            }
+        });
+
+        displayRows();
+    });
+</script>
+<script>
+   document.getElementById('searchInput').addEventListener('input', function () {
+        const filter = this.value.toUpperCase();
+        const table = document.getElementById('table-subject');
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let rowMatches = false;
+
+            for (let j = 0; j < cells.length; j++) {
+                const cell = cells[j];
+                if (cell) {
+                    const textValue = cell.textContent || cell.innerText;
+                    if (textValue.toUpperCase().indexOf(filter) > -1) {
+                        rowMatches = true;
+                        break; 
+                    }
+                }
+            }
+            rows[i].style.display = rowMatches ? '' : 'none';
+        }
+    });
+</script>
+<script>
+   document.getElementById('searchInput1').addEventListener('input', function () {
+        const filter = this.value.toUpperCase();
+        const table = document.getElementById('table-assignment');
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let rowMatches = false;
+
+            for (let j = 0; j < cells.length; j++) {
+                const cell = cells[j];
+                if (cell) {
+                    const textValue = cell.textContent || cell.innerText;
+                    if (textValue.toUpperCase().indexOf(filter) > -1) {
+                        rowMatches = true;
+                        break; 
+                    }
+                }
+            }
+            rows[i].style.display = rowMatches ? '' : 'none';
+        }
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rowsPerPage = 5; 
+        let currentPage = 1;
+
+        const table = document.getElementById("table-assignment");
+        const rows = Array.from(table.getElementsByTagName("tr")).slice(1);
+        const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+        function displayRows() {
+            rows.forEach((row, index) => {
+                row.style.display = (index >= (currentPage - 1) * rowsPerPage && index < currentPage * rowsPerPage) ? "" : "none";
+            });
+            updatePaginationButtons();
+        }
+
+        function updatePaginationButtons() {
+            document.getElementById("prevPage1").disabled = currentPage === 1;
+            document.getElementById("nextPage1").disabled = currentPage === totalPages;
+            document.getElementById("pageNumber1").innerText = `Page ${currentPage} of ${totalPages}`;
+        }
+
+        document.getElementById("prevPage1").addEventListener("click", function () {
+            if (currentPage > 1) {
+                currentPage--;
+                displayRows();
+            }
+        });
+
+        document.getElementById("nextPage1").addEventListener("click", function () {
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayRows();
+            }
+        });
+
+        displayRows();
+    });
+</script>
+  {% include 'administrator/inc/footer.html' %}      
+  </body>
+</html>

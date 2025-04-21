@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herly Stack - Reciepts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        @media print {
+             @page {
+        size: auto; 
+        margin: 2mm; 
+    }
+    .receipt-container {
+        width: 100%;
+        max-width: 80mm;
+        page-break-after: always;
+        margin: 0;
+        font-size: 12px;
+    }
+    body {
+        margin: 0;
+        padding: 0;
+    }
+           
+        }
+        .receipt-container {
+            width: 80mm;
+            margin: 20px auto;
+            padding: 10px;
+            border: 2px solid #000;
+            box-sizing: border-box;
+        }
+        .receipt {
+            margin-bottom: 20px;
+        }
+        .header {
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 18px;
+            margin: 0;
+        }
+        .address {
+            font-size: 12px;
+            margin: 5px 0;
+            text-align: center;
+        }
+        .details {
+            font-size: 12px;
+            text-align: left;
+        }
+        .footer {
+            
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature {
+            
+            width: 150px;
+            
+        }
+    </style>
+</head>
+<body onload="window.print()">
+
+<div class="receipt-container">
+    <!-- First Receipt -->
+    <div class="receipt">
+        <div class="header">
+            <h1>Herly Stack Portals</h1>
+            <center><p style="font-size: 14px;">Behind Presidential lodge, Birnin kebbi, Kebbi State.Phone: 09131526206. Email: herlystack@gmail.com</p></center>
+            
+        </div>
+        {% for student_info in student_info %}
+         
+        <div class="details">
+            <center><h3>Fees Payment Reciept</h3></center>
+        </div>
+        <div class="footer" style="margin-top: 5px;">
+            <p><b>Student Name: </b>{{student_info.payment_student.student_fname}} {{student_info.payment_student.student_othernames}}</p>
+        </div>
+        <div class="footer" style="margin-top: -5px;">
+            <p><b>Class: </b> {{student_info.payment_student.student_class.class_name}}</p>
+        </div>
+        <div class="footer" style="margin-top: -5px;">
+            <p><b>Amount Paid: </b> &#8358;{{student_info.payment_amount}}</p>
+        </div>
+        <div class="footer" style="margin-top: -5px;">
+            <p><b>Payment For: </b> {{student_info.payment_description}}</p>
+        </div>
+        <div class="footer" style="margin-top: -5px;">
+            <p><b>Term: </b>{{student_info.payment_term}}</p>
+        </div>
+        <div class="footer" style="margin-top: -5px;">
+            <p><b>Session: </b> {{student_info.payment_session}}</p>
+        </div>
+        <div class="footer" style="margin-top: -5px;">
+            <p><b>Date: </b> {{student_info.payment_date}}</p>
+        </div>
+        
+        <div class="footer">
+            <div class="signature"><b>Signed:</b> Management</div>
+        </div>
+        {% endfor %}
+        <br>
+        <center><p style="font-size:8px;"> &copy; Herly Stack Portals, All Rights Reserved.</p></center>
+    </div>
+</div>
+
+</body>
+</html>

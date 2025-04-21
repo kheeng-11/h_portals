@@ -1,0 +1,226 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'student/inc/head.html' %}
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      {% include 'student/inc/sidebar.html' %}
+      <!-- End Sidebar -->
+
+      <div class="main-panel">
+        
+        {% include 'student/inc/header.html' %}
+        <div class="container">
+          <div class="page-inner">
+            <div
+              class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4"
+            >
+              <div>
+                <h3 class="fw-bold mb-3">Student Dashboard</h3>
+                <h6 class="op-7 mb-2">Herly Stack School Portals</h6>
+              </div>
+             
+            </div>
+            <div class="row">
+              
+             
+              <div class="col-sm-6 col-md-6">
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-icon">
+                        <div
+                          class="icon-big text-center icon-success bubble-shadow-small"
+                        >
+                          <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                      </div>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">Payments</p>
+                          <h4 class="card-title">{{payment}}</h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-6">
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-icon">
+                        <div
+                          class="icon-big text-center icon-secondary bubble-shadow-small"
+                        >
+                          <i class="fas fa-pen-square"></i>
+                        </div>
+                      </div>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">Assignments</p>
+                          <h4 class="card-title">{{assignment}}</h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="card card-round">
+                  <div class="card-header">
+                    <div class="card-head-row">
+                      <div class="card-title"> School Calender</div>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="chart-container" style="min-height: 375px">
+                      <div id="calendar" style="width: 100%; text-align: center;">
+                          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                              <button onclick="prevMonth()" style="padding: 5px 10px; border: none; background: #007bff; color: white; cursor: pointer;">❮</button>
+                              <h3 id="month-year" style="margin: 0;"></h3>
+                              <button onclick="nextMonth()" style="padding: 5px 10px; border: none; background: #007bff; color: white; cursor: pointer;">❯</button>
+                          </div>
+                          <table style="width: 100%; border-collapse: collapse;">
+                              <thead>
+                                  <tr style="background-color: #f4f4f4;">
+                                      <th style="padding: 10px; border: 1px solid #ccc;">Sun</th>
+                                      <th style="padding: 10px; border: 1px solid #ccc;">Mon</th>
+                                      <th style="padding: 10px; border: 1px solid #ccc;">Tue</th>
+                                      <th style="padding: 10px; border: 1px solid #ccc;">Wed</th>
+                                      <th style="padding: 10px; border: 1px solid #ccc;">Thu</th>
+                                      <th style="padding: 10px; border: 1px solid #ccc;">Fri</th>
+                                      <th style="padding: 10px; border: 1px solid #ccc;">Sat</th>
+                                  </tr>
+                              </thead>
+                              <tbody id="calendar-body"></tbody>
+                          </table>
+                      </div>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card card-primary card-round">
+                  <div class="card-header">
+                    <div class="card-head-row">
+                      <div class="card-title">{{get_term_c.term_name}}</div>
+                      <div class="card-tools">
+                        <div class="dropdown">
+                          <button
+                            class="btn btn-sm btn-label-light dropdown-toggle"
+                            type="button"
+                            id="dropdownMenuButton"
+                            data-bs-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                          >
+                            Activities
+                          </button>
+                          <div
+                            class="dropdown-menu"
+                            aria-labelledby="dropdownMenuButton"
+                          >
+                            <a class="dropdown-item" href="{% url 'student:assignments' request.session.student_id %}">Assignments</a>
+                            <a class="dropdown-item" href="{% url 'student:my_record' request.session.student_id %}">Payments</a>
+                            <a class="dropdown-item" href="{% url 'student:compiled_result' request.session.student_id %}"
+                              >Result</a
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-category">{{get_session_c.session_name}}</div>
+                  </div>
+                  <div class="card-body pb-0">
+                    <div class="mb-4 mt-2">
+                      <h1></h1>
+                    </div>
+                    <div class="pull-in">
+                      <canvas id="dailySalesChart"></canvas>
+                    </div>
+                  </div>
+                </div>
+               <div class="card card-round">
+                  <div class="card-body pb-0">
+                    
+                    <center><h4 class="mb-2">Alrights Reserved</h4></center>
+                    <center><p class="text-muted">Session: {{get_session_c.session_name}}, {{get_term_c.term_name}}</p></center>
+
+                    <center><p class="text-muted" style="text-decoration: underline;"><img src="{% static 'student/assets/img/herlyiconbg.png' %}">Property Of Herly Stack</p></center>
+                    <div class="pull-in sparkline-fix">
+                      <div id="lineChart"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+            let currentDate = new Date();
+            let events = { {% for event in event_info_c %}"{{ event.event_date }}": "{{ event.event_name }}"{% if not forloop.last %}, {% endif %}{% endfor %} };
+
+            function generateCalendar(date) {
+                let monthYear = document.getElementById("month-year");
+                let calendarBody = document.getElementById("calendar-body");
+                calendarBody.innerHTML = "";
+
+                let firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+                let daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+                monthYear.textContent = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+                let row = document.createElement("tr");
+                for (let i = 0; i < firstDay; i++) {
+                    row.appendChild(document.createElement("td"));
+                }
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    if (row.children.length === 7) {
+                        calendarBody.appendChild(row);
+                        row = document.createElement("tr");
+                    }
+
+                    let cell = document.createElement("td");
+                    cell.textContent = day;
+                    cell.style.padding = "10px";
+                    cell.style.border = "1px solid #ccc";
+
+                    let eventKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    if (events[eventKey]) {
+                        cell.style.backgroundColor = "#1572e861";
+                        cell.title = events[eventKey];
+                        cell.innerText = events[eventKey];
+                        cell.style.fontSize = "10px";
+                        
+                    }
+
+                    row.appendChild(cell);
+                }
+                
+                while (row.children.length < 7) {
+                    row.appendChild(document.createElement("td"));
+                }
+                calendarBody.appendChild(row);
+            }
+
+            function prevMonth() {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                generateCalendar(currentDate);
+            }
+
+            function nextMonth() {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                generateCalendar(currentDate);
+            }
+
+            generateCalendar(currentDate);
+        </script>
+        {% include 'student/inc/footer.html' %}
+        
+  </body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herly Stack Portals - Payment Records</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            color: #333;
+        }
+        header {
+            background-color: white;
+            text-align: center;
+            padding: 20px 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        } 
+       
+        }
+        header h1 {
+            color:#6861ce;
+            font-size: 2rem;
+            margin: 10px 0 5px;
+        }
+        header p {
+            color:rgb(83, 49, 217);
+            font-size: 1rem;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        table th {
+            background-color: #6861ce;
+            color: white;
+        }
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+        table td {
+            color: #333;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+            header p {
+                font-size: 0.9rem;
+            }
+            table th, table td {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+        }
+        @media (max-width: 480px) {
+            header img {
+                width: 50%;
+            }
+            header h1 {
+                font-size: 1.2rem;
+            }
+            header p {
+                font-size: 0.8rem;
+            }
+            .container {
+                padding: 0 5px;
+            }
+        }
+    </style>
+</head>
+<body onload="window.print()">
+
+
+
+<div class="container">
+    <h3 style="color: #6861ce;">Payment Records</h3>
+    <table>
+         <thead><tr>
+                        <th>Date</th>
+                            <th>Adm. No</th>
+                            <th>Full Name</th>
+                            <th>Term/Session</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                        
+                      </tr>
+                                </thead>
+                               <tbody>
+                          {% for payment in student_info%}
+                              <tr>
+                                  <td>
+                                    {{ payment.payment_date }}
+                                  </td>
+                                  <td>{{ payment.payment_student.student_adm }}</td>
+                                  <td>{{ payment.payment_student.student_fname }} {{ payment.payment_student.student_othernames }}</td>
+                                  <td>{{ payment.payment_term }} <br> {{ payment.payment_session }}</td>
+                                  <td>&#8358;{{ payment.payment_amount}}</td>
+                                  <td>{{ payment.payment_description}}</td>
+                                  
+                              </tr> 
+                          {% empty %}
+                              <tr>
+                                  <td colspan="7" style="color:red;">
+                                      <center>No Payment Found!</center>
+                                  </td>
+                              </tr>
+                          {% endfor %}
+                      </tbody>
+
+    </table>
+</div>
+
+
+</body>
+ <footer style="padding: 20px; text-align: center; border-top: 1px solid #ccc; font-size: 14px;">
+        <p style="margin: 0; color: #888;">  &copy; 2025 -  Herly Stack Portals.</p>
+    </footer>
+</html>

@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'administrator/inc/head.html' %}
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      {% include 'administrator/inc/sidebar.html' %}
+      <!-- End Sidebar -->
+
+      <div class="main-panel">
+        
+        {% include 'administrator/inc/header.html' %}
+        <div class="container">
+          <div class="page-inner">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-header">
+                    <a href="javascript:history.back()" style="text-decoration: none; font-size: 14px; color: #6861ce;">
+                        &#8592; Back
+                    </a>
+                    <div class="card-title">Edit Parent</div>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <center>{% for message in messages %}
+                        {% if message.tags == "success" %}
+                         <script>
+                              Swal.fire({
+                                  title: "Success!",
+                                  text: "{{ message }}",
+                                  icon: "success",
+                                  timer: 1500,
+                                  showConfirmButton: false
+                              }).then(() => {
+                                  let sectionId = {{ parent.id }}; 
+                                  let url = "{% url 'administrator:parent_record' 0 %}".replace("0", sectionId);
+                                  window.location.href = url;
+                              });
+                          </script>
+                        {% elif message.tags == "error" %}
+                            <script>
+                              Swal.fire({
+                                  title: "Error!",
+                                  text: "{{ message }}",
+                                  icon: "error", 
+                                  timer: 1500,
+                                  showConfirmButton: false
+                              }).then(() => {
+                                  window.location.href = "{% url 'administrator:edit_parent' parent.id %}";
+                              });
+                            </script>
+                        {% endif %}
+                        {% endfor %}
+                      </center>
+                      <div class="col-md-6 col-lg-6">
+                        <form method="post">
+                          {% csrf_token %}
+                        <div class="form-group">
+                          <label for="email2">Full Name</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            placeholder="Abdussalam"
+                            name="parent_name"
+                            required
+                            value = "{{ parent.parent_name }}"
+                          />
+                        </div>
+                        
+                        <div class="form-group">
+                          <label for="email2">Email</label>
+                          <input
+                            type="email"
+                            class="form-control"
+                            placeholder="parent@mail.com"
+                            name="parent_email"
+                            required
+                            value = "{{ parent.parent_email }}"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label for="email2">Phone Number</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            placeholder="081 XXXXXXXXX"
+                            pattern="[0-9]+"
+                            name="parent_phone"
+                            required
+                            maxlength='11'
+                            minlength='11'
+                            value = "{{ parent.parent_phone }}"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label for="email2">Address</label>
+                          <textarea
+                            type="email"
+                            class="form-control"
+                            placeholder="House No. 26 GRA"
+                            name="parent_address"
+                            required
+                            
+                          />{{ parent.parent_address }}</textarea>
+                        </div>
+                        
+                        <button class="btn btn-xs btn-secondary btn-sm" style="margin-left:10px; width: 150px; height: 40px; font-size: 14px; border-radius: 7px;"> Update Parent </button>
+                        </form>
+                 </div>
+              </div>   
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include 'administrator/inc/footer.html' %}      
+  </body>
+</html>

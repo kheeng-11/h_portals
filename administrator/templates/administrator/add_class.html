@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'administrator/inc/head.html' %}
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      {% include 'administrator/inc/sidebar.html' %}
+      <!-- End Sidebar -->
+
+      <div class="main-panel">
+        
+        {% include 'administrator/inc/header.html' %}
+        <div class="container">
+          <div class="page-inner">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-header">
+                    <a href="javascript:history.back()" style="text-decoration: none; font-size: 14px; color: #6861ce;">
+                        &#8592; Back
+                    </a>
+                    <div class="card-title">Add Class</div>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <center>{% for message in messages %}
+                        {% if message.tags == "success" %}
+                         <script>
+                              Swal.fire({
+                                  title: "Success!",
+                                  text: "{{ message }}",
+                                  icon: "success", 
+                                  timer: 1500,
+                                  showConfirmButton: false
+                              }).then(() => {
+                                  window.location.href = "{% url 'administrator:section_info' section_info.id %}";
+                              });
+                            </script>
+                        {% elif message.tags == "error" %}
+                            <script>
+                              Swal.fire({
+                                  title: "Error!",
+                                  text: "{{ message }}",
+                                  icon: "error", 
+                                  timer: 1500,
+                                  showConfirmButton: false
+                              }).then(() => {
+                                  window.location.href = "{% url 'administrator:add_class' section_info.id %}";
+                              });
+                            </script>
+                        {% endif %}
+                        {% endfor %}
+                      </center>
+                      <div class="col-md-6 col-lg-6">
+                        <form method="post">
+                          {% csrf_token %}
+                        <div class="form-group">
+                          <label for="email2">Class Name</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            placeholder="Grade 1, JSS1, SS1.."
+                            name="class_name"
+                            required
+                          />
+                        </div>
+                        <button class="btn btn-xs btn-secondary btn-sm" style="margin-left:10px; width: 100px; height: 40px; font-size: 14px; border-radius: 7px;"> Add Class </button>
+                        </form>
+                 </div>
+              </div>   
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include 'administrator/inc/footer.html' %}      
+  </body>
+</html>

@@ -1,0 +1,343 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'teacher/inc/head.html' %}
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      {% include 'teacher/inc/sidebar.html' %}
+      <!-- End Sidebar -->
+
+      <div class="main-panel">
+        
+        {% include 'teacher/inc/header.html' %}
+        <div class="container">
+          <div class="page-inner">
+            <div class="card">
+                  <div class="card-header">
+                    <a href="javascript:history.back()" style="text-decoration: none; font-size: 14px; color: #6861ce;">
+                        &#8592; Back
+                    </a>
+                    <div class="card-title">Student Gradings - {{not.class_name}}, {{get_not_sub.subject_name}} </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="card-sub">
+                      <div style="display: flex;">
+                       <input type="text" id="searchInput" placeholder=" search..." 
+                      style="width: 130px; height: 28px; border: 1px solid #ccc; border-radius: 15px; padding: 5px; color: grey; font-size:14px;">
+                       <a href="javascript:void(0);" 
+                       class="btn btn-xs btn-secondary btn-sm"
+                       style="margin-left: 5px;" 
+                       onclick="window.location.reload();">Refresh</a>
+                            </div>
+                    </div>
+                    <div class="table-responsive">
+                      <table class="table table-bordered" id="table">
+                        <thead>
+                          <tr>
+                            <th>Admission Number</th>
+                            <th>Full Name</th>
+                            <th>C.A Score</th>
+                            <th>Exam Score</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                         {% for item in student_data %}
+                          {% with student=item.student grade=item.grade %}
+                            <tr>
+                              <td>{{ student.student_adm }}</td>
+                              <td>{{ student.student_fname }} {{ student.student_othernames }}</td>
+                              <td>{{ grade.grade_ca|default_if_none:"-" }}</td>
+                              <td>{{ grade.grade_exam|default_if_none:"-" }}</td>
+                              <td>{{ grade.grade_total|default_if_none:"-" }}</td>
+                              <td>
+                                <button class="btn btn-sm btn-secondary open-score-modal"
+                                        data-student-id="{{ student.id }}"
+                                        data-student-name="{{ student.student_fname }} {{ student.student_othernames }}"
+                                        data-ca="{{ grade.grade_ca|default_if_none:'' }}"
+                                        data-exam="{{ grade.grade_exam|default_if_none:'' }}"
+                                        data-total="{{ grade.grade_total|default_if_none:'' }}">
+                                  {% if grade %}Edit{% else %}Add{% endif %}
+                                </button>
+                              </td>
+                            </tr>
+                          {% endwith %}
+                          
+                          {% empty %}
+                          <tr>
+                            <td colspan="7" style="color:red;"><center>No Student Found!</center></td>
+                          </tr>
+                      
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal fade" id="scoreModal" tabindex="-1" role="dialog" aria-labelledby="scoreModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <form id="scoreForm">
+                      {% csrf_token %}
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="scoreModalLabel">Enter Score for <span id="studentName"></span></h5>
+                          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span>&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <input type="hidden" name="student_id" id="modalStudentId">
+                          <input type="hidden" name="subject_id" id="modalSubjectId" value="{{ get_not_sub.id }}">
+
+                          <div class="form-group">
+                            <label>CA Score</label>
+                            <input type="number" step="0.01" name="ca_score" id="modalCaScore" class="form-control">
+                          </div>
+                          <div class="form-group">
+                            <label>Exam Score</label>
+                            <input type="number" step="0.01" name="exam_score" id="modalExamScore" class="form-control">
+                          </div>
+                          <div class="form-group">
+                            <label>Total Score</label>
+                            <input type="number" step="0.01" name="total_score" id="modalTotalScore" class="form-control" readonly>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="submit" class="btn btn-secondary">Save</button>
+                          <button style="background-color:red; color: white;" type="button" class="btn btn-secondar" data-bs-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+          <div style="
+          text-align: center;
+          margin-top: 20px;
+          padding: 5px;
+          background-color: #6861ce;
+          border-radius: 10px;
+          font-size: 14px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 10px;
+      ">
+          <button id="prevPage" style="
+              padding: 5px 10px;
+              border: none;
+              border-radius: 5px;
+              background-color: white;
+              color: #6861ce;
+              font-weight: bold;
+              font-size: 14px;
+              cursor: pointer;
+              transition: all 0.3s ease;
+          " onmouseover="this.style.backgroundColor='#1a2035'; this.style.color='white';" 
+          onmouseout="this.style.backgroundColor='white'; this.style.color='#6861ce';">
+              ◀ Previous
+          </button>
+
+          <span id="pageNumber" style="
+              color: white;
+              font-size: 14px;
+              font-weight: bold;
+          ">Page 1 of X</span>
+
+          <button id="nextPage" style="
+              padding: 5px 10px;
+              border: none;
+              border-radius: 5px;
+              background-color: white;
+              color: #6861ce;
+              font-weight: bold;
+              cursor: pointer;
+              transition: all 0.3s ease;
+          " onmouseover="this.style.backgroundColor='#1a2035'; this.style.color='white';" 
+          onmouseout="this.style.backgroundColor='white'; this.style.color='#6861ce';">
+              Next ▶
+          </button>
+      </div>
+     <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const modal = new bootstrap.Modal(document.getElementById("scoreModal"));
+        const form = document.getElementById("scoreForm");
+
+        const caInput = document.getElementById("modalCaScore");
+        const examInput = document.getElementById("modalExamScore");
+        const totalInput = document.getElementById("modalTotalScore");
+
+        function updateTotal() {
+          const ca = parseFloat(caInput.value) || 0;
+          const exam = parseFloat(examInput.value) || 0;
+          totalInput.value = (ca + exam);
+        }
+
+        caInput.addEventListener("input", updateTotal);
+        examInput.addEventListener("input", updateTotal);
+
+        document.querySelectorAll(".open-score-modal").forEach(button => {
+          button.addEventListener("click", () => {
+            const studentId = button.dataset.studentId;
+            const studentName = button.dataset.studentName;
+            const ca = button.dataset.ca;
+            const exam = button.dataset.exam;
+            const total = button.dataset.total;
+
+            document.getElementById("modalStudentId").value = studentId;
+            document.getElementById("studentName").textContent = studentName;
+            caInput.value = ca;
+            examInput.value = exam;
+            totalInput.value = total;
+
+            updateTotal();
+            modal.show();
+          });
+        });
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const csrfToken = document.querySelector("[name='csrfmiddlewaretoken']").value;
+
+          const studentId = document.getElementById("modalStudentId").value;
+          const subjectId = document.getElementById("modalSubjectId").value;
+
+          const data = {
+            ca_score: caInput.value,
+            exam_score: examInput.value,
+            total_score: totalInput.value,
+            subject_id: subjectId,
+          };
+
+          fetch(`/teacher/submit_score/${studentId}/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken,
+      },
+      body: JSON.stringify(data),
+    })
+    .then(async (response) => {
+      const contentType = response.headers.get("Content-Type");
+      if (!contentType.includes("application/json")) {
+        const text = await response.text();
+        throw new Error("Expected JSON but got HTML:\n" + text.slice(0, 200));
+      }
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || "Unknown server error");
+      }
+       Swal.fire({
+        title: 'Success!',
+        text: 'score saved successfully!',
+        icon: 'success',
+        confirmButtonText: 'Close',
+        timer: 1000, 
+        timerProgressBar: true, 
+      });
+      modal.hide();
+    })
+    .catch(error => {
+      console.error("AJAX error:", error.message);
+      Swal.fire({
+        title: 'Error!',
+        text: error.message,
+        icon: 'error',
+        confirmButtonText: 'Try Again',
+        timer: 1000, 
+        timerProgressBar: true, 
+      });
+    });
+        });
+      });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const rowsPerPage = 5; 
+            let currentPage = 1;
+
+            const table = document.getElementById("table");
+            const rows = Array.from(table.getElementsByTagName("tr")).slice(1);
+            const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+            function displayRows() {
+                rows.forEach((row, index) => {
+                    row.style.display = (index >= (currentPage - 1) * rowsPerPage && index < currentPage * rowsPerPage) ? "" : "none";
+                });
+                updatePaginationButtons();
+            }
+
+            function updatePaginationButtons() {
+                document.getElementById("prevPage").disabled = currentPage === 1;
+                document.getElementById("nextPage").disabled = currentPage === totalPages;
+                document.getElementById("pageNumber").innerText = `Page ${currentPage} of ${totalPages}`;
+            }
+
+            document.getElementById("prevPage").addEventListener("click", function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayRows();
+                }
+            });
+
+            document.getElementById("nextPage").addEventListener("click", function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayRows();
+                }
+            });
+
+            displayRows();
+        });
+    </script>
+    <script>
+    function confirmDelete(event, url) {
+        event.preventDefault();
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This action cannot be undone!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6861ce",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+    </script>
+    <script>
+       document.getElementById('searchInput').addEventListener('input', function () {
+            const filter = this.value.toUpperCase();
+            const table = document.getElementById('table');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let rowMatches = false;
+
+                for (let j = 0; j < cells.length; j++) {
+                    const cell = cells[j];
+                    if (cell) {
+                        const textValue = cell.textContent || cell.innerText;
+                        if (textValue.toUpperCase().indexOf(filter) > -1) {
+                            rowMatches = true;
+                            break; 
+                        }
+                    }
+                }
+                rows[i].style.display = rowMatches ? '' : 'none';
+            }
+        });
+    </script>
+        </div>
+    </div>
+    {% include 'teacher/inc/footer.html' %}      
+  </body>
+</html>

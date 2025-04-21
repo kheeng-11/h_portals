@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'teacher/inc/head.html' %}
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      {% include 'teacher/inc/sidebar.html' %}
+      <!-- End Sidebar -->
+
+      <div class="main-panel">
+        
+        {% include 'teacher/inc/header.html' %}
+        <div class="container">
+          <div class="page-inner">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-header">
+                    <a href="javascript:history.back()" style="text-decoration: none; font-size: 14px; color: #6861ce;">
+                        &#8592; Back
+                    </a>
+                    <div class="card-title">Add Assignment</div>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <center>{% for message in messages %}
+                        {% if message.tags == "success" %}
+                         <script>
+                              Swal.fire({
+                                  title: "Success!",
+                                  text: "{{ message }}",
+                                  icon: "success", 
+                                  timer: 1500,
+                                  showConfirmButton: false
+                              }).then(() => {
+                                  window.location.href = "{% url 'teacher:assignments' not_info.id s_info.id %}";
+                              });
+                            </script>
+                        {% elif message.tags == "error" %}
+                            <script>
+                              Swal.fire({
+                                  title: "Error!",
+                                  text: "{{ message }}",
+                                  icon: "error", 
+                                  timer: 1500,
+                                  showConfirmButton: false
+                              }).then(() => {
+                                  window.location.href = "{% url 'teacher:add_assignment' not_info.id s_info.id %}";
+                              });
+                            </script>
+                        {% endif %}
+                        {% endfor %}
+                      </center>
+                      <div class="col-md-6 col-lg-6">
+                        <form method="post" enctype="multipart/form-data">
+                          {% csrf_token %}
+
+                        <div class="form-group">
+                          <label for="email2">Submission Deadline</label>
+                          <input
+                            type = 'date'
+                            class="form-control"
+                            name="assignment_deadline"
+                            required
+                          >
+                        </div>
+                        <div class="form-group">
+                          <label for="email2">Assignment Instruction</label>
+                          <textarea
+                            class="form-control"
+                            name="assignment_instruction"
+                            required
+                          ></textarea>
+                        </div>
+                        <div class="form-group">
+                          <label for="email2">Assignment Material</label>
+                          <input
+                            type = 'file'
+                            class="form-control"
+                            name="assignment_material"
+                            required
+                            accept = '.pdf'
+                          >
+                        </div>
+                        
+                        <button class="btn btn-xs btn-secondary btn-sm" style="margin-left:10px; width: 150px; height: 40px; font-size: 14px; border-radius: 7px;"> Add Assignment </button>
+                        </form>
+                 </div>
+              </div>   
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include 'teacher/inc/footer.html' %}      
+  </body>
+</html>

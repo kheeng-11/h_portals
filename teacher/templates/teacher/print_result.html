@@ -1,0 +1,288 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Result</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fff;
+      margin: 0;
+      padding: 10px;
+      font-size: 12px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, #004080, #0074cc);
+      color: white;
+      padding: 10px;
+      border-radius: 6px 6px 0 0;
+    }
+
+    .header-top img {
+      height: 50px;
+      background: white;
+      padding: 3px;
+      border-radius: 4px;
+    }
+
+    .school-name {
+      text-align: right;
+    }
+
+    .school-name h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .school-name p {
+      margin: 2px 0;
+      font-size: 11px;
+    }
+
+    .header-bottom {
+      display: flex;
+      justify-content: space-between;
+      background: #f0f4fa;
+      padding: 10px;
+      margin-top: 5px;
+      border-bottom: 2px solid #004080;
+    }
+
+    .student-details {
+      flex: 2;
+      line-height: 1.4;
+    }
+
+    .header-logo img {
+      height: 40px;
+      background: white;
+      padding: 2px;
+      border-radius: 3px;
+    }
+
+    .mini-table {
+      flex: 2;
+    }
+
+    .mini-table table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    .mini-table th, .mini-table td {
+      padding: 4px 6px;
+      border: 1px solid #ccc;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 11px;
+    }
+
+    .result-table th, .result-table td {
+      border: 1px solid #ddd;
+      padding: 6px;
+      text-align: center;
+    }
+
+    .result-table th {
+      background-color: #004080;
+      color: white;
+    }
+
+    .result-table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .summary, .summary2 {
+      display: flex;
+      border: 1px solid #ccc;
+      border-top: none;
+      margin-top: 8px;
+    }
+
+    .summary div, .summary2 div {
+      flex: 1;
+      padding: 6px;
+      border-right: 1px solid #ccc;
+      text-align: center;
+    }
+
+    .summary div:last-child, .summary2 div:last-child {
+      border-right: none;
+    }
+
+    .comments-section {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .comments {
+      width: 65%;
+      font-size: 11px;
+    }
+
+    .stamp {
+      width: 30%;
+      text-align: right;
+    }
+
+    .stamp img {
+      height: 50px;
+      opacity: 0.7;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 10px;
+      color: #777;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body onload="window.print()" >
+
+  <div class="container">
+
+    <div class="header-top">
+      <img src="{% static 'teacher/assets/img/yamslogo.png' %}" alt="School Logo">
+      <div class="school-name">
+        <h1>Herly Stack Portal</h1>
+        <p>No. 123 Learning Lane, Birnin Kebbi</p>
+        <p>Email: info@herlystack.ng | +234 9131526206</p>
+      </div>
+    </div>
+
+    <div class="header-bottom">
+      <div class="student-details">
+        <p><strong>Admission Number:</strong> {{student_info.student_adm}}</p>
+        <p><strong>Full Name:</strong> {{student_info.student_fname}} {{student_info.student_othernames}}</p>
+        <p><strong>Address:</strong> {{student_info.student_address}}</p>
+      </div>
+      <div class="mini-table">
+        <table>
+          <tr><th>Session</th><td>{{session_info.session_name}}</td></tr>
+          <tr><th>Term</th><td>{{term_info.term_name}}</td></tr>
+          <tr><th>Class</th><td>{{student_info.student_class.class_name}}</td></tr>
+          <tr><th>No. In Class</th><td>{{class_count}}</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <table class="result-table">
+      <tr>
+        <th>Subject</th>
+        <th>C.A</th>
+        <th>ES</th>
+        <th>TS</th>
+        <th>Grade</th>
+        <th>Remark</th>
+      </tr>
+      {% for result in result_info %}
+      <tr>
+        <td>{{result.grade_subject.subject_name}}</td>
+        <td>{{result.grade_ca}}</td>
+        <td>{{result.grade_exam}}</td>
+        <td>{{result.grade_total}}</td>
+        {% if result.grade_total >= 70 %}
+        <td>A</td>
+        <td>Excellent</td>
+        {% elif result.grade_total >= 50 %}
+        <td>B</td>
+        <td>Very Good</td>
+        {% elif result.grade_total >= 40 %}
+        <td>C</td>
+        <td>Good</td>
+        {% elif result.grade_total >= 30 %}
+        <td>D</td>
+        <td>Fair</td>
+        {% else%}
+        <td>F</td>
+        <td>Fail</td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </table>
+    <br>
+
+    <div class="summary">
+      <div>Total Subjects: {{result_count}}</div>
+      <div>Total Score: {{total_score.total_score|floatformat:2}}</div>
+      <div>Average Score: {{average|floatformat:2}}</div>
+    </div>
+    <br>
+    <div class="summary2">
+      <div>Performance: 
+        {% if average >= 70 %}
+        <td>Excellent</td>
+        {% elif result.grade_total >= 50 %}
+        <td>Very Good</td>
+        {% elif average >= 40 %}
+        <td>Good</td>
+        {% elif average >= 30 %}
+        <td>Fair</td>
+        {% else%}
+        <td>Poor</td>
+        {% endif %}
+      </div>
+      <div>Highest Avg: {{highest_avg.avg_score|floatformat:2}}</div>
+      <div>Lowest Avg: {{lowest_avg.avg_score|floatformat:2}}</div>
+    </div>
+
+    <div class="comments-section">
+      <div class="comments">
+        <p><strong>Teacher:</strong> {% if average >= 70 %}
+          Excellent result! Keep it up!
+        {% elif result.grade_total >= 50 %}
+        Great Job! Keep it up!
+        {% elif average >= 40 %}
+        Good result, work harder next term
+        {% elif average >= 30 %}
+        Buckle Up and work hard!
+        {% else%}
+        Poor performance, work hard next time!
+        {% endif %}</p>
+        <p><strong>Principal:</strong> {% if average >= 70 %}
+          Outstanding Performance, Keep it Up!
+        {% elif result.grade_total >= 50 %}
+        Outstanding Performance, Keep it Up!
+        {% elif average >= 40 %}
+        Outstanding Performance, Keep it Up!
+        {% elif average >= 30 %}
+        Good Performance, work hard!
+        {% else%}
+        Poor performance!
+        {% endif %}</p>
+      </div>
+      <div class="stamp">
+        <img src="{% static 'teacher/assets/img/stamp.png' %}" alt="Principal Stamp">
+        <p><strong>Principal</strong></p>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <img src="{% static 'teacher/assets/img/herlyiconbg.png' %}"><p>This result is electronically generated by Herly Stack.</p>
+    </div>
+
+  </div>
+
+</body>
+</html>

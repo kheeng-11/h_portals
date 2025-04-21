@@ -1,0 +1,87 @@
+{% load static %}
+<html lang="en">
+  {% include 'parent/inc/head.html' %}
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      {% include 'parent/inc/sidebar.html' %}
+      <!-- End Sidebar -->
+
+      <div class="main-panel">
+        
+        {% include 'parent/inc/header.html' %}
+        <div class="container">
+          <div class="page-inner">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-header">
+                    <a href="javascript:history.back()" style="text-decoration: none; font-size: 14px; color: #6861ce;">
+                        &#8592; Back
+                    </a>
+                    <div class="card-title">Update Profile Picture</div>
+                    <div class="card-sub">
+                      Click On The Picture, or Click On Choose File
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <center>{% for message in messages %}
+                        {% if message.tags == "success" %}
+                         <script>
+                              Swal.fire({
+                                  title: "Success!",
+                                  text: "{{ message }}",
+                                  icon: "success",
+                                  timer: 1500,
+                                  showConfirmButton: false
+                              }).then(() => {
+                                  let sectionId = {{ parent.id }}; 
+                                  let url = "{% url 'parent:profile' 0 %}".replace("0", sectionId);
+                                  window.location.href = url;
+                              });
+                          </script>
+
+                        {% elif message.tags == "error" %}
+                            <script>
+                              Swal.fire({
+                                  title: "Error!",
+                                  text: "{{ message }}",
+                                  icon: "error", 
+                                  timer: 5000,
+                                  showConfirmButton: false
+                              }).then(() => {
+                                  window.location.href = "{% url 'parent:profile' parent.id %}";
+                              });
+                            </script>
+                        {% endif %}
+                        {% endfor %}
+                      </center>
+                      <div class="col-md-6 col-lg-6">
+                        <form action="{% url 'parent:change_profile_picture' parent.id %}" method="post" enctype="multipart/form-data">
+                          {% csrf_token %}
+                          
+                          <center><label for="profile-picture-input">
+                                  <img src="{{ parent.parent_picture.url }}" alt="Profile Picture" class="profile-img" style="width: 150px;height: 150px;border-radius:50%;">
+                          </label></center>
+
+                          <input type="file" id="profile-picture-input" name="parent_picture" required style="margin-top:3px;">
+                          
+                          <button type="submit" class="btn btn-xs btn-secondary btn-sm" 
+                                  style="margin-left:10px; width: 100px; height: 40px; font-size: 14px; border-radius: 7px; margin-top: 3px;">
+                              Update
+                          </button>
+                      </form>
+
+                 </div>
+              </div>   
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  {% include 'parent/inc/footer.html' %}      
+  </body>
+</html>
